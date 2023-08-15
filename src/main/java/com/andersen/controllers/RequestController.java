@@ -7,7 +7,5 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface RequestController {
-    List<Request> getAll(HttpServletRequest request, HttpServletResponse response);
-
     List<Request> getAllSorted(HttpServletRequest request, HttpServletResponse response);
 }

@@ -24,12 +24,6 @@ public class RequestControllerServlet implements RequestController {
 
     @Override
     @Get("/requests/list")
-    public List<Request> getAll(HttpServletRequest request, HttpServletResponse response) {
-        return requestService.getAll();
-    }
-
-    @Override
-    @Get("/requests/sorted")
     public List<Request> getAllSorted(HttpServletRequest request, HttpServletResponse response) {
         RequestSortKey sortKey = RequestSortKey.valueOf(request.getParameter("sort").toUpperCase());
 
