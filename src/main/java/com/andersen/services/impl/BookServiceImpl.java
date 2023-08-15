@@ -1,6 +1,8 @@
 package com.andersen.services.impl;
 
 import com.andersen.enums.BookSortKey;
+import com.andersen.enums.OrderSortKey;
+import com.andersen.enums.RequestSortKey;
 import com.andersen.models.Book;
 import com.andersen.models.Order;
 import com.andersen.models.Request;
@@ -48,7 +50,7 @@ public class BookServiceImpl implements BookService {
     }
 
     public void completeRequests(Long bookId) {
-        List<Request> requests = requestRepository.getAll();
+        List<Request> requests = requestRepository.getAllSorted(RequestSortKey.NATURAL);
 
         requests.forEach(request -> {
             if (Objects.equals(request.getBook().getId(), bookId)) {
@@ -60,7 +62,7 @@ public class BookServiceImpl implements BookService {
     }
 
     public void completeOrders() {
-        List<Order> orders = orderRepository.getAll();
+        List<Order> orders = orderRepository.getAllSorted(OrderSortKey.NATURAL);
 
         for (Order order : orders) {
             completeOrder(order);

@@ -19,8 +19,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Singleton
 public class RouterServlet extends HttpServlet {
@@ -134,13 +136,13 @@ public class RouterServlet extends HttpServlet {
     }
 
     private List<RequestHandler> findHandlersByHttpMethod(Class<? extends Annotation> httpMethodAnnotation) {
-        return List.of(bookController, orderController, requestController).stream()
+        return Stream.of(bookController, orderController, requestController)
                 .map(controller ->
-                        Arrays.asList(controller.getClass().getDeclaredMethods()).stream()
+                        Arrays.stream(controller.getClass().getDeclaredMethods())
                                 .filter(method -> Objects.nonNull(method.getAnnotation(httpMethodAnnotation)))
                                 .map(method -> new RequestHandler(controller, method))
                                 .toList())
-                .flatMap(list -> list.stream())
+                .flatMap(Collection::stream)
                 .toList();
     }
 }
