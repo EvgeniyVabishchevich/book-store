@@ -1,0 +1,9 @@
+.gradle
+build
+bin
+.vscode
+.idea
+out
+tomcat
+app
+src/main/resources/data
