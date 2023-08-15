@@ -13,6 +13,7 @@ import com.andersen.services.BookService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -54,7 +55,8 @@ public class BookServiceImpl implements BookService {
 
         requests.forEach(request -> {
             if (Objects.equals(request.getBook().getId(), bookId)) {
-                requestRepository.changeRequestStatus(request.getId(), Request.RequestStatus.COMPLETED);
+                request.setRequestStatus(Request.RequestStatus.COMPLETED);
+                requestRepository.save(request);
             }
         });
 
@@ -75,6 +77,8 @@ public class BookServiceImpl implements BookService {
                 return;
             }
         }
-        orderRepository.changeOrderStatus(order.getId(), Order.OrderStatus.COMPLETED);
+        order.setStatus(Order.OrderStatus.COMPLETED);
+        order.setCompletionDate(LocalDateTime.now());
+        orderRepository.save(order);
     }
 }

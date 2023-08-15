@@ -33,22 +33,26 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void add(Order order) {
         orderRepository.save(order);
+        order.getRequests().forEach(requestRepository::save);
     }
 
     @Override
     public void complete(Long id) {
-        completeRequests(id);
-
         Order order = orderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Wrong order id"));
+
+        completeRequests(order);
 
         for (Request request : order.getRequests()) {
             if (request.getRequestStatus() == Request.RequestStatus.IN_PROCESS) {
-                orderRepository.changeOrderStatus(order.getId(), Order.OrderStatus.IN_PROCESS);
+                order.setStatus(Order.OrderStatus.IN_PROCESS);
+                orderRepository.save(order);
                 return;
             }
         }
 
-        orderRepository.changeOrderStatus(order.getId(), Order.OrderStatus.COMPLETED);
+        order.setStatus(Order.OrderStatus.COMPLETED);
+        order.setCompletionDate(LocalDateTime.now());
+        orderRepository.save(order);
     }
 
     @Override
@@ -72,15 +76,14 @@ public class OrderServiceImpl implements OrderService {
         return income;
     }
 
-    public void completeRequests(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("Wrong order id"));
-
+    public void completeRequests(Order order) {
         for (Request request : order.getRequests()) {
             if (request.getBook().getStatus() == Book.BookStatus.IN_STOCK) {
-                requestRepository.changeRequestStatus(request.getId(), Request.RequestStatus.COMPLETED);
+                request.setRequestStatus(Request.RequestStatus.COMPLETED);
             } else {
-                requestRepository.changeRequestStatus(request.getId(), Request.RequestStatus.IN_PROCESS);
+                request.setRequestStatus(Request.RequestStatus.IN_PROCESS);
             }
+            requestRepository.save(request);
         }
     }
 }
