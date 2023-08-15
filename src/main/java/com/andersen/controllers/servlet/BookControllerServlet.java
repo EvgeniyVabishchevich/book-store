@@ -48,8 +48,8 @@ public class BookControllerServlet implements BookController {
     @Put("/books/change-status")
     public void changeBookStatus(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String data = IOUtils.toString(request.getInputStream(), StandardCharsets.UTF_8);
-            JsonBookStatusChange statusChange = objectMapper.readValue(data, JsonBookStatusChange.class);
+            JsonBookStatusChange statusChange = objectMapper.readValue(request.getInputStream(),
+                    JsonBookStatusChange.class);
 
             bookService.changeBookStatus(statusChange.getId(), statusChange.getStatus());
         } catch (IOException e) {

@@ -49,8 +49,7 @@ public class OrderControllerServlet implements OrderController {
     @Post("/orders/add")
     public void addOrder(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String data = IOUtils.toString(request.getInputStream(), StandardCharsets.UTF_8);
-            JsonOrder jsonOrder = objectMapper.readValue(data, JsonOrder.class);
+            JsonOrder jsonOrder = objectMapper.readValue(request.getInputStream(), JsonOrder.class);
 
             List<Request> requests = jsonOrder.getRequests().stream()
                     .map(jsonRequest -> new Request(jsonOrder.getClientId(), bookService.findById(jsonRequest.getBookId()),
@@ -69,8 +68,7 @@ public class OrderControllerServlet implements OrderController {
     @Put("/orders/complete")
     public void complete(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String data = IOUtils.toString(request.getInputStream(), StandardCharsets.UTF_8);
-            Long id = objectMapper.readValue(data, Long.class);
+            Long id = objectMapper.readValue(request.getInputStream(), Long.class);
 
             orderService.complete(id);
         } catch (IOException e) {
@@ -91,8 +89,7 @@ public class OrderControllerServlet implements OrderController {
     @Put("/orders/cancel")
     public void cancel(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String data = IOUtils.toString(request.getInputStream(), StandardCharsets.UTF_8);
-            Long id = objectMapper.readValue(data, Long.class);
+            Long id = objectMapper.readValue(request.getInputStream(), Long.class);
 
             orderService.cancel(id);
         } catch (IOException e) {
