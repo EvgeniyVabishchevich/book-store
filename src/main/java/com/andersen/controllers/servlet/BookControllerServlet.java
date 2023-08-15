@@ -12,10 +12,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Singleton
@@ -32,12 +30,6 @@ public class BookControllerServlet implements BookController {
 
     @Override
     @Get("/books/list")
-    public List<Book> getAll(HttpServletRequest request, HttpServletResponse response) {
-        return bookService.getAll();
-    }
-
-    @Override
-    @Get("/books/sorted")
     public List<Book> getAllSorted(HttpServletRequest request, HttpServletResponse response) {
         BookSortKey bookSortKey = BookSortKey.valueOf(request.getParameter("sort").toUpperCase());
 

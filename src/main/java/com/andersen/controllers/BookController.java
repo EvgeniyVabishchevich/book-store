@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface BookController {
 
-    List<Book> getAll(HttpServletRequest request, HttpServletResponse response);
-
     List<Book> getAllSorted(HttpServletRequest request, HttpServletResponse response);
 
     void changeBookStatus(HttpServletRequest request, HttpServletResponse response);

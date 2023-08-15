@@ -9,7 +9,6 @@ public interface BookService {
 
     List<Book> getAllSorted(BookSortKey sortKey);
 
-    List<Book> getAll();
 
     Book findById(Long bookId);
 

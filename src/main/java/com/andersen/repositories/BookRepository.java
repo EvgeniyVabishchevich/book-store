@@ -7,8 +7,6 @@ import java.util.List;
 
 
 public interface BookRepository {
-    List<Book> getAll();
-
     Book findById(Long bookId);
 
     List<Book> getAllSorted(BookSortKey sortKey);

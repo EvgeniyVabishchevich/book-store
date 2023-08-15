@@ -14,5 +14,6 @@ public interface OrderController {
     void complete(HttpServletRequest request, HttpServletResponse response);
 
     int getIncomeBySpecifiedPeriod(HttpServletRequest request, HttpServletResponse response);
+
     void cancel(HttpServletRequest request, HttpServletResponse response);
 }

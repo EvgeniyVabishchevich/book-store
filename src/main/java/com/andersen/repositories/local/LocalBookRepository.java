@@ -26,17 +26,8 @@ public class LocalBookRepository implements BookRepository {
     }
 
     @Override
-    public List<Book> getAll() {
-        try {
-            return objectMapper.readValue(new File(configModel.savePath()), AppState.class).getBooks();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public Book findById(Long id) {
-        return getAll().stream()
+        return getAllSorted(BookSortKey.NATURAL).stream()
                 .filter(book -> Objects.equals(book.getId(), id))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Wrong book id"));
     }
@@ -52,30 +43,30 @@ public class LocalBookRepository implements BookRepository {
 
     @Override
     public List<Book> getAllSorted(BookSortKey sortKey) {
-        List<Book> books = getAll();
+        try {
+            List<Book> books = objectMapper.readValue(new File(configModel.savePath()), AppState.class).getBooks();
 
-        sort(books, sortKey);
-        return books;
+            switch (sortKey) {
+                case NAME -> books.sort(Comparator.comparing(Book::getName));
+                case PRICE -> books.sort(Comparator.comparing(Book::getPrice));
+                case STATUS -> books.sort(Comparator.comparing(Book::getStatus));
+            }
+
+            return books;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void changeBookStatus(Long id, Book.BookStatus status) {
-        List<Book> books = getAll();
+        List<Book> books = getAllSorted(BookSortKey.NATURAL);
 
         Book searchedBook = findById(books, id);
 
         searchedBook.setStatus(status);
 
         save(books);
-    }
-
-    private void sort(List<Book> books, BookSortKey bookSortKey) {
-        switch (bookSortKey) {
-            case NAME -> books.sort(Comparator.comparing(Book::getName));
-            case PRICE -> books.sort(Comparator.comparing(Book::getPrice));
-            case STATUS -> books.sort(Comparator.comparing(Book::getStatus));
-            default -> throw new IllegalArgumentException("Unexpected value: " + bookSortKey);
-        }
     }
 
     private void save(List<Book> books) {
