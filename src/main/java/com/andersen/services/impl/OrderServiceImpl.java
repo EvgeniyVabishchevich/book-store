@@ -4,7 +4,6 @@ import com.andersen.enums.OrderSortKey;
 import com.andersen.models.Book;
 import com.andersen.models.Order;
 import com.andersen.models.Request;
-import com.andersen.repositories.BookRepository;
 import com.andersen.repositories.OrderRepository;
 import com.andersen.repositories.RequestRepository;
 import com.andersen.services.OrderService;
@@ -20,13 +19,10 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final RequestRepository requestRepository;
 
-    private final BookRepository bookRepository;
-
     @Inject
-    public OrderServiceImpl(OrderRepository orderRepository, RequestRepository requestRepository, BookRepository bookRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, RequestRepository requestRepository) {
         this.orderRepository = orderRepository;
         this.requestRepository = requestRepository;
-        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -64,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
     public int getIncomeBySpecifiedPeriod(LocalDateTime from, LocalDateTime to) {
         Integer income = 0;
 
-        List<Order> orders = orderRepository.getAll();
+        List<Order> orders = orderRepository.getAllSorted(OrderSortKey.NATURAL);
 
         for (Order order : orders) {
             if (order.getStatus() == Order.OrderStatus.COMPLETED && order.getCompletionDate().isAfter(from) &&

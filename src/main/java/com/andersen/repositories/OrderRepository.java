@@ -9,8 +9,6 @@ import java.util.Optional;
 public interface OrderRepository {
     void save(Order order);
 
-    List<Order> getAll();
-
     List<Order> getAllSorted(OrderSortKey sortKey);
 
     Optional<Order> findById(Long id);

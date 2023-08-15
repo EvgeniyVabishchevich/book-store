@@ -34,7 +34,7 @@ public class OrderControllerServlet implements OrderController {
     }
 
     @Override
-    @Get("/orders/sorted")
+    @Get("/orders/list")
     public List<Order> getAllSorted(HttpServletRequest request, HttpServletResponse response) {
         String sortKey = request.getParameter("sort");
 

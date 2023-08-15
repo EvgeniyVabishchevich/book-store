@@ -28,31 +28,30 @@ public class LocalOrderRepository implements OrderRepository {
     }
 
     @Override
-    public List<Order> getAll() {
+    public List<Order> getAllSorted(OrderSortKey sortKey) {
         try {
-            return objectMapper.readValue(new File(configModel.savePath()), AppState.class).getOrders();
+            List<Order> orders = objectMapper.readValue(new File(configModel.savePath()), AppState.class).getOrders();
+
+            switch (sortKey) {
+                case PRICE -> orders.sort(Comparator.comparing(Order::getPrice));
+                case STATUS -> orders.sort(Comparator.comparing(Order::getStatus));
+                case DATE -> orders.sort(Comparator.comparing(Order::getCompletionDate));
+            }
+
+            return orders;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public List<Order> getAllSorted(OrderSortKey sortKey) {
-        List<Order> orders = getAll();
-
-        sort(orders, sortKey);
-
-        return orders;
-    }
-
-    @Override
     public Optional<Order> findById(Long id) {
-        return getAll().stream().filter(order -> Objects.equals(order.getId(), id)).findFirst();
+        return getAllSorted(OrderSortKey.NATURAL).stream().filter(order -> Objects.equals(order.getId(), id)).findFirst();
     }
 
     @Override
     public void changeOrderStatus(Long id, Order.OrderStatus orderStatus) {
-        List<Order> orders = getAll();
+        List<Order> orders = getAllSorted(OrderSortKey.NATURAL);
 
         Order searchedOrder = findById(orders, id);
 
@@ -67,7 +66,7 @@ public class LocalOrderRepository implements OrderRepository {
 
     @Override
     public void remove(Long id) {
-        List<Order> orders = getAll();
+        List<Order> orders = getAllSorted(OrderSortKey.NATURAL);
 
         Order searchedOrder = findById(orders, id);
 
@@ -85,18 +84,9 @@ public class LocalOrderRepository implements OrderRepository {
         throw new IllegalArgumentException("Wrong books id");
     }
 
-    public void sort(List<Order> orders, OrderSortKey sortKey) {
-        switch (sortKey) {
-            case PRICE -> orders.sort(Comparator.comparing(Order::getPrice));
-            case STATUS -> orders.sort(Comparator.comparing(Order::getStatus));
-            case DATE -> orders.sort(Comparator.comparing(Order::getCompletionDate));
-            default -> throw new IllegalArgumentException("Unexpected value: " + sortKey);
-        }
-    }
-
     @Override
     public void save(Order order) {
-        List<Order> orders = getAll();
+        List<Order> orders = getAllSorted(OrderSortKey.NATURAL);
 
         orders.add(order);
 
