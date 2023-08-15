@@ -11,9 +11,9 @@ import com.andersen.controllers.servlet.RequestControllerServlet;
 import com.andersen.repositories.BookRepository;
 import com.andersen.repositories.OrderRepository;
 import com.andersen.repositories.RequestRepository;
-import com.andersen.repositories.local.LocalBookRepository;
-import com.andersen.repositories.local.LocalOrderRepository;
-import com.andersen.repositories.local.LocalRequestRepository;
+import com.andersen.repositories.jdbc.JdbcBookRepository;
+import com.andersen.repositories.jdbc.JdbcOrderRepository;
+import com.andersen.repositories.jdbc.JdbcRequestRepository;
 import com.andersen.router.RouterServlet;
 import com.andersen.services.BookService;
 import com.andersen.services.OrderService;
@@ -26,10 +26,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import jakarta.inject.Singleton;
 import jakarta.servlet.http.HttpServlet;
 import org.apache.commons.io.IOUtils;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -44,9 +47,9 @@ public class DependencyModule extends AbstractModule {
 
         bind(HttpServlet.class).to(RouterServlet.class);
 
-        bind(BookRepository.class).to(LocalBookRepository.class);
-        bind(OrderRepository.class).to(LocalOrderRepository.class);
-        bind(RequestRepository.class).to(LocalRequestRepository.class);
+        bind(BookRepository.class).to(JdbcBookRepository.class);
+        bind(OrderRepository.class).to(JdbcOrderRepository.class);
+        bind(RequestRepository.class).to(JdbcRequestRepository.class);
 
         bind(BookService.class).to(BookServiceImpl.class);
         bind(OrderService.class).to(OrderServiceImpl.class);
@@ -55,6 +58,17 @@ public class DependencyModule extends AbstractModule {
         bind(BookController.class).to(BookControllerServlet.class);
         bind(OrderController.class).to(OrderControllerServlet.class);
         bind(RequestController.class).to(RequestControllerServlet.class);
+    }
+
+    @Provides
+    @Singleton
+    public DataSource dataSource() {
+        HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl("jdbc:postgresql://localhost:5432/BookStore");
+        hikariConfig.setUsername("postgres");
+        hikariConfig.setPassword("1234qwer");
+
+        return new HikariDataSource(hikariConfig);
     }
 
     @Provides

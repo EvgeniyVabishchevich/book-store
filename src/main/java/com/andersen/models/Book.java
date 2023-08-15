@@ -7,9 +7,9 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
         property = "id", scope = Book.class)
 public class Book {
 
-    private BookStatus status;
     private Long id;
     private String name;
+    private BookStatus status;
     private Integer price;
 
     public enum BookStatus {
@@ -24,6 +24,13 @@ public class Book {
         this.name = name;
         this.price = price;
         this.status = BookStatus.IN_STOCK;
+    }
+
+    public Book(Long id, String name, BookStatus status, Integer price) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+        this.price = price;
     }
 
     public Long getId() {
