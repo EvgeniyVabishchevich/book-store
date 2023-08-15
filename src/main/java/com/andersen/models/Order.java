@@ -19,6 +19,16 @@ public class Order {
         JUST_CREATED, IN_PROCESS, COMPLETED, CANCELED
     }
 
+    public Order(Long id, Long clientId, LocalDateTime completionDate, OrderStatus status, List<Request> requests,
+                 Integer price) {
+        this.id = id;
+        this.clientId = clientId;
+        this.completionDate = completionDate;
+        this.status = status;
+        this.requests = requests;
+        this.price = price;
+    }
+
     public Order(Long clientId, List<Request> requests) {
         this.id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
         this.clientId = clientId;
