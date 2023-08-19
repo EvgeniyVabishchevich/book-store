@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface RequestService {
     List<Request> getAllSorted(RequestSortKey requestSortKey);
+    void add(Request request);
 }

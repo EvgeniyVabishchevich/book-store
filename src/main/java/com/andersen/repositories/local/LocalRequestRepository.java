@@ -51,24 +51,16 @@ public class LocalRequestRepository implements RequestRepository {
         }
     }
 
-    public Request findById(List<Request> requests, Long id) {
-        for (Request request : requests) {
-            if (Objects.equals(request.getId(), id)) {
-                return request;
-            }
-        }
-        throw new IllegalArgumentException("Wrong books id");
+    @Override
+    public List<Request> findAllByOrderId(Long orderId) {
+        //TODO make
+        return null;
     }
 
     @Override
-    public void changeRequestStatus(Long id, Request.RequestStatus status) {
-        List<Request> requests = getAllSorted(RequestSortKey.NATURAL);
-
-        Request searchedRequest = findById(requests, id);
-
-        searchedRequest.setRequestStatus(status);
-
-        save(requests);
+    public List<Request> findAllByBookId(Long bookId) {
+        // TODO make
+        return null;
     }
 
     public void save(List<Request> requests) {

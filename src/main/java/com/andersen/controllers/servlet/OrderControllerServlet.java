@@ -49,12 +49,14 @@ public class OrderControllerServlet implements OrderController {
         try {
             JsonOrder jsonOrder = objectMapper.readValue(request.getInputStream(), JsonOrder.class);
 
+            Order order = new Order(jsonOrder.getClientId());
+
             List<Request> requests = jsonOrder.getRequests().stream()
-                    .map(jsonRequest -> new Request(jsonOrder.getClientId(), bookService.findById(jsonRequest.getBookId()),
+                    .map(jsonRequest -> new Request(order.getId(), jsonOrder.getClientId(), bookService.findById(jsonRequest.getBookId()),
                             jsonRequest.getAmount()))
                     .toList();
 
-            Order order = new Order(jsonOrder.getClientId(), requests);
+            order.changeRequests(requests);
 
             orderService.add(order);
         } catch (IOException e) {

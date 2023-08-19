@@ -11,6 +11,7 @@ import com.andersen.controllers.servlet.RequestControllerServlet;
 import com.andersen.repositories.BookRepository;
 import com.andersen.repositories.OrderRepository;
 import com.andersen.repositories.RequestRepository;
+import com.andersen.repositories.jdbc.Database;
 import com.andersen.repositories.jdbc.JdbcBookRepository;
 import com.andersen.repositories.jdbc.JdbcOrderRepository;
 import com.andersen.repositories.jdbc.JdbcRequestRepository;
@@ -58,6 +59,12 @@ public class DependencyModule extends AbstractModule {
         bind(BookController.class).to(BookControllerServlet.class);
         bind(OrderController.class).to(OrderControllerServlet.class);
         bind(RequestController.class).to(RequestControllerServlet.class);
+    }
+
+    @Provides
+    @Singleton
+    public Database database() {
+        return new Database(dataSource());
     }
 
     @Provides

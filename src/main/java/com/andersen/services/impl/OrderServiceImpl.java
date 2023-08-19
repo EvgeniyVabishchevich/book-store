@@ -33,14 +33,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void add(Order order) {
         orderRepository.save(order);
-        order.getRequests().forEach(requestRepository::save);
+        order.getRequests().forEach(requestRepository::save);//TODO maybe fix
     }
 
     @Override
     public void complete(Long id) {
-        Order order = orderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Wrong order id"));
+        completeRequests(id);
 
-        completeRequests(order);
+        Order order = orderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Wrong order id"));
 
         for (Request request : order.getRequests()) {
             if (request.getRequestStatus() == Request.RequestStatus.IN_PROCESS) {
@@ -76,8 +76,10 @@ public class OrderServiceImpl implements OrderService {
         return income;
     }
 
-    public void completeRequests(Order order) {
-        for (Request request : order.getRequests()) {
+    public void completeRequests(Long orderId) {
+        List<Request> requests = requestRepository.findAllByOrderId(orderId);
+
+        for (Request request : requests) {
             if (request.getBook().getStatus() == Book.BookStatus.IN_STOCK) {
                 request.setRequestStatus(Request.RequestStatus.COMPLETED);
             } else {

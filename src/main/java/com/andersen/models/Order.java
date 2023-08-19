@@ -26,21 +26,36 @@ public class Order {
         this.completionDate = completionDate;
         this.status = status;
         this.requests = requests;
+        this.price = countPrice();
+    }
+
+    public Order(Long id, Long clientId, LocalDateTime completionDate, OrderStatus status, Integer price) {
+        this.id = id;
+        this.clientId = clientId;
+        this.completionDate = completionDate;
+        this.status = status;
         this.price = price;
     }
 
-    public Order(Long clientId, List<Request> requests) {
+    public Order(Long clientId) {
         this.id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
         this.clientId = clientId;
         this.status = OrderStatus.JUST_CREATED;
-        this.requests = requests;
-        this.price = requests.stream().
-                mapToInt(request -> request.getAmount() * request.getBook().getPrice())
-                .sum();
     }
 
     public Order() {
 
+    }
+
+    public void changeRequests(List<Request> requests) {
+        this.requests = requests;
+        price = countPrice();
+    }
+
+    public int countPrice() {
+        return requests.stream().
+                mapToInt(request -> request.getAmount() * request.getBook().getPrice())
+                .sum();
     }
 
     public Long getId() {
@@ -83,11 +98,7 @@ public class Order {
     }
 
     public void setRequests(List<Request> requests) {
-        if (requests == null) {
-            this.requests = new ArrayList<>();
-        } else {
-            this.requests = new ArrayList<>(requests);
-        }
+        this.requests = new ArrayList<>(requests);
     }
 
     public Integer getPrice() {

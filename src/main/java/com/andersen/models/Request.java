@@ -34,6 +34,15 @@ public class Request {
         this.requestStatus = RequestStatus.JUST_CREATED;
     }
 
+    public Request(Long id, Long clientId, Long orderId, Book book, Integer amount, RequestStatus requestStatus) {
+        this.id = id;
+        this.clientId = clientId;
+        this.orderId = orderId;
+        this.book = book;
+        this.amount = amount;
+        this.requestStatus = requestStatus;
+    }
+
     public Request() {
     }
 

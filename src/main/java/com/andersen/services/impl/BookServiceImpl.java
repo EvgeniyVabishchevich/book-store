@@ -2,7 +2,6 @@ package com.andersen.services.impl;
 
 import com.andersen.enums.BookSortKey;
 import com.andersen.enums.OrderSortKey;
-import com.andersen.enums.RequestSortKey;
 import com.andersen.models.Book;
 import com.andersen.models.Order;
 import com.andersen.models.Request;
@@ -15,7 +14,6 @@ import com.google.inject.Singleton;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Singleton
 public class BookServiceImpl implements BookService {
@@ -43,31 +41,34 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void changeBookStatus(Long id, Book.BookStatus status) {
-        bookRepository.changeBookStatus(id, status);
+        Book book = bookRepository.findById(id);
+        book.setStatus(status);
+        bookRepository.save(book);
 
         if (status == Book.BookStatus.IN_STOCK) {
             completeRequests(id);
+            completeOrders();
         }
     }
 
     public void completeRequests(Long bookId) {
-        List<Request> requests = requestRepository.getAllSorted(RequestSortKey.NATURAL);
+        List<Request> requests = requestRepository.findAllByBookId(bookId);
 
         requests.forEach(request -> {
-            if (Objects.equals(request.getBook().getId(), bookId)) {
+            if (request.getRequestStatus() == Request.RequestStatus.IN_PROCESS) {
                 request.setRequestStatus(Request.RequestStatus.COMPLETED);
                 requestRepository.save(request);
             }
         });
-
-        completeOrders();
     }
 
     public void completeOrders() {
         List<Order> orders = orderRepository.getAllSorted(OrderSortKey.NATURAL);
 
         for (Order order : orders) {
-            completeOrder(order);
+            if (order.getStatus() == Order.OrderStatus.IN_PROCESS) {
+                completeOrder(order);
+            }
         }
     }
 

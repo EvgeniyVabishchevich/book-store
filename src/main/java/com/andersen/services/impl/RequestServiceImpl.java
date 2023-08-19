@@ -24,4 +24,9 @@ public class RequestServiceImpl implements RequestService {
         return requestRepository.getAllSorted(requestSortKey);
     }
 
+    @Override
+    public void add(Request request) {
+        requestRepository.save(request);
+    }
+
 }

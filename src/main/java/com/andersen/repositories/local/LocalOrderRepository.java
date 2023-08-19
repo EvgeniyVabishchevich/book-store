@@ -50,21 +50,6 @@ public class LocalOrderRepository implements OrderRepository {
     }
 
     @Override
-    public void changeOrderStatus(Long id, Order.OrderStatus orderStatus) {
-        List<Order> orders = getAllSorted(OrderSortKey.NATURAL);
-
-        Order searchedOrder = findById(orders, id);
-
-        searchedOrder.setStatus(orderStatus);
-
-        if (orderStatus == Order.OrderStatus.COMPLETED) {
-            searchedOrder.setCompletionDate(LocalDateTime.now());
-        }
-
-        save(orders);
-    }
-
-    @Override
     public void remove(Long id) {
         List<Order> orders = getAllSorted(OrderSortKey.NATURAL);
 

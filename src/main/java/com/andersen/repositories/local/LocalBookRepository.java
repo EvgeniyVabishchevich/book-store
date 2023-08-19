@@ -26,6 +26,11 @@ public class LocalBookRepository implements BookRepository {
     }
 
     @Override
+    public void save(Book book) {
+        // TODO make
+    }
+
+    @Override
     public Book findById(Long id) {
         return getAllSorted(BookSortKey.NATURAL).stream()
                 .filter(book -> Objects.equals(book.getId(), id))
@@ -56,17 +61,6 @@ public class LocalBookRepository implements BookRepository {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void changeBookStatus(Long id, Book.BookStatus status) {
-        List<Book> books = getAllSorted(BookSortKey.NATURAL);
-
-        Book searchedBook = findById(books, id);
-
-        searchedBook.setStatus(status);
-
-        save(books);
     }
 
     private void save(List<Book> books) {
