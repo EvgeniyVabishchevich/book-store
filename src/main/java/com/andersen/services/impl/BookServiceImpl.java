@@ -9,20 +9,16 @@ import com.andersen.repositories.BookRepository;
 import com.andersen.repositories.OrderRepository;
 import com.andersen.repositories.RequestRepository;
 import com.andersen.services.BookService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Singleton
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final OrderRepository orderRepository;
     private final RequestRepository requestRepository;
 
-    @Inject
     public BookServiceImpl(BookRepository bookRepository, OrderRepository orderRepository, RequestRepository requestRepository) {
         this.bookRepository = bookRepository;
         this.orderRepository = orderRepository;

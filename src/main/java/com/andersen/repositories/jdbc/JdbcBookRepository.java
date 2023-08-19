@@ -4,14 +4,12 @@ import com.andersen.enums.BookSortKey;
 import com.andersen.models.Book;
 import com.andersen.repositories.BookRepository;
 import com.andersen.repositories.jdbc.mapper.BookMapper;
-import com.google.inject.Inject;
 
 import java.util.List;
 
 public class JdbcBookRepository implements BookRepository {
     private final Database database;
 
-    @Inject
     public JdbcBookRepository(Database database) {
         this.database = database;
     }

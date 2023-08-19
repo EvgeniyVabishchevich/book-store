@@ -4,7 +4,6 @@ import com.andersen.enums.OrderSortKey;
 import com.andersen.models.Order;
 import com.andersen.repositories.OrderRepository;
 import com.andersen.repositories.jdbc.mapper.OrderMapper;
-import com.google.inject.Inject;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +12,6 @@ public class JdbcOrderRepository implements OrderRepository {
 
     private final Database database;
 
-    @Inject
     public JdbcOrderRepository(Database database) {
         this.database = database;
     }
@@ -50,7 +48,7 @@ public class JdbcOrderRepository implements OrderRepository {
             case STATUS -> orderMethod = "order_status";
         }
 
-        return database.execute(sql + " ORDER BY " + orderMethod + " order_id")
+        return database.execute(sql + " ORDER BY " + orderMethod + ", orders.order_id")
                 .map(OrderMapper::apply);
     }
 

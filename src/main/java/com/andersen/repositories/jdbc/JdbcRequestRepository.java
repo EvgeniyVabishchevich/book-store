@@ -4,7 +4,6 @@ import com.andersen.enums.RequestSortKey;
 import com.andersen.models.Request;
 import com.andersen.repositories.RequestRepository;
 import com.andersen.repositories.jdbc.mapper.RequestMapper;
-import com.google.inject.Inject;
 
 import java.util.List;
 
@@ -12,7 +11,6 @@ public class JdbcRequestRepository implements RequestRepository {
 
     private final Database database;
 
-    @Inject
     public JdbcRequestRepository(Database database) {
         this.database = database;
     }

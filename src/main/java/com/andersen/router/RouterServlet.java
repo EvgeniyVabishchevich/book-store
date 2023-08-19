@@ -8,8 +8,6 @@ import com.andersen.controllers.BookController;
 import com.andersen.controllers.OrderController;
 import com.andersen.controllers.RequestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-@Singleton
 public class RouterServlet extends HttpServlet {
 
     private final BookController bookController;
@@ -37,7 +34,6 @@ public class RouterServlet extends HttpServlet {
     private final List<RequestHandler> deleteHandlers;
     private final ObjectMapper objectMapper;
 
-    @Inject
     public RouterServlet(BookController bookController, OrderController orderController,
                          RequestController requestController, ObjectMapper objectMapper) {
         this.bookController = bookController;

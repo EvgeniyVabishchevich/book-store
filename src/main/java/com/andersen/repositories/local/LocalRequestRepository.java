@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 @Singleton
 public class LocalRequestRepository implements RequestRepository {

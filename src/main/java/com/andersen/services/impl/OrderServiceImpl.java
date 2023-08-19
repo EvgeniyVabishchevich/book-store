@@ -7,19 +7,15 @@ import com.andersen.models.Request;
 import com.andersen.repositories.OrderRepository;
 import com.andersen.repositories.RequestRepository;
 import com.andersen.services.OrderService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Singleton
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final RequestRepository requestRepository;
 
-    @Inject
     public OrderServiceImpl(OrderRepository orderRepository, RequestRepository requestRepository) {
         this.orderRepository = orderRepository;
         this.requestRepository = requestRepository;
@@ -33,7 +29,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void add(Order order) {
         orderRepository.save(order);
-        order.getRequests().forEach(requestRepository::save);//TODO maybe fix
+        order.getRequests().forEach(requestRepository::save);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.andersen.repositories.jdbc;
 
 import com.andersen.repositories.jdbc.mapper.RowMapper;
-import com.google.inject.Inject;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -19,7 +18,6 @@ import java.util.List;
 public class Database {
     private final DataSource dataSource;
 
-    @Inject
     public Database(DataSource dataSource) {
         this.dataSource = dataSource;
     }

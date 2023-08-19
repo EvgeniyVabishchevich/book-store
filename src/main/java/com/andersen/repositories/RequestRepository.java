@@ -9,6 +9,8 @@ public interface RequestRepository {
     void save(Request request);
 
     List<Request> getAllSorted(RequestSortKey sortKey);
+
     List<Request> findAllByOrderId(Long orderId);
+
     List<Request> findAllByBookId(Long bookId);
 }

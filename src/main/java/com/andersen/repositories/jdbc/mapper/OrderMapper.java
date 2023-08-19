@@ -1,6 +1,5 @@
 package com.andersen.repositories.jdbc.mapper;
 
-import com.andersen.models.Book;
 import com.andersen.models.Order;
 import com.andersen.models.Request;
 
