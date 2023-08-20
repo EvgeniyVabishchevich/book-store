@@ -40,7 +40,7 @@ public class JdbcRequestRepository implements RequestRepository {
 
         switch (sortKey) {
             case PRICE -> orderMethod = "requests.amount * books.book_price";
-            case NAME -> orderMethod = "request_name";
+            case NAME -> orderMethod = "books.book_name";
         }
 
         return database.execute(sql + " ORDER BY " + orderMethod)

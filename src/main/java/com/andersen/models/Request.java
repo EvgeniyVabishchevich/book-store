@@ -3,22 +3,41 @@ package com.andersen.models;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 import java.util.UUID;
 
+@Entity
+@Table(name = "requests")
 public class Request {
-
+    @Id
+    @Column(name = "request_id")
     private Long id;
+    @Column(name = "client_id")
     private Long clientId;
+    @Column(name = "order_id")
     private Long orderId;
 
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
             property = "id", scope = Book.class)
     @JsonIdentityReference(alwaysAsId = true)
+    @OneToOne
+    @JoinColumn(name = "book_id")
     private Book book;
 
+    @Column(name = "amount")
     private Integer amount;
 
+    @Column(name = "request_status")
+    @Enumerated(EnumType.STRING)
     private RequestStatus requestStatus;
 
     public enum RequestStatus {
