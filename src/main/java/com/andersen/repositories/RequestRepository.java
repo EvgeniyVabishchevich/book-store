@@ -10,5 +10,7 @@ public interface RequestRepository {
 
     List<Request> getAllSorted(RequestSortKey sortKey);
 
-    void changeRequestStatus(Long id, Request.RequestStatus status);
+    List<Request> findAllByOrderId(Long orderId);
+
+    List<Request> findAllByBookId(Long bookId);
 }

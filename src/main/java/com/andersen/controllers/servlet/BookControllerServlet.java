@@ -8,21 +8,17 @@ import com.andersen.enums.BookSortKey;
 import com.andersen.models.Book;
 import com.andersen.services.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
 
-@Singleton
 public class BookControllerServlet implements BookController {
 
     private final BookService bookService;
     private final ObjectMapper objectMapper;
 
-    @Inject
     public BookControllerServlet(BookService bookService, ObjectMapper objectMapper) {
         this.bookService = bookService;
         this.objectMapper = objectMapper;

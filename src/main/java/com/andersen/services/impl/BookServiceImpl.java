@@ -1,6 +1,7 @@
 package com.andersen.services.impl;
 
 import com.andersen.enums.BookSortKey;
+import com.andersen.enums.OrderSortKey;
 import com.andersen.models.Book;
 import com.andersen.models.Order;
 import com.andersen.models.Request;
@@ -8,20 +9,16 @@ import com.andersen.repositories.BookRepository;
 import com.andersen.repositories.OrderRepository;
 import com.andersen.repositories.RequestRepository;
 import com.andersen.services.BookService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
-@Singleton
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final OrderRepository orderRepository;
     private final RequestRepository requestRepository;
 
-    @Inject
     public BookServiceImpl(BookRepository bookRepository, OrderRepository orderRepository, RequestRepository requestRepository) {
         this.bookRepository = bookRepository;
         this.orderRepository = orderRepository;
@@ -40,30 +37,34 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void changeBookStatus(Long id, Book.BookStatus status) {
-        bookRepository.changeBookStatus(id, status);
+        Book book = bookRepository.findById(id);
+        book.setStatus(status);
+        bookRepository.save(book);
 
         if (status == Book.BookStatus.IN_STOCK) {
             completeRequests(id);
+            completeOrders();
         }
     }
 
     public void completeRequests(Long bookId) {
-        List<Request> requests = requestRepository.getAll();
+        List<Request> requests = requestRepository.findAllByBookId(bookId);
 
         requests.forEach(request -> {
-            if (Objects.equals(request.getBook().getId(), bookId)) {
-                requestRepository.changeRequestStatus(request.getId(), Request.RequestStatus.COMPLETED);
+            if (request.getRequestStatus() == Request.RequestStatus.IN_PROCESS) {
+                request.setRequestStatus(Request.RequestStatus.COMPLETED);
+                requestRepository.save(request);
             }
         });
-
-        completeOrders();
     }
 
     public void completeOrders() {
-        List<Order> orders = orderRepository.getAll();
+        List<Order> orders = orderRepository.getAllSorted(OrderSortKey.NATURAL);
 
         for (Order order : orders) {
-            completeOrder(order);
+            if (order.getStatus() == Order.OrderStatus.IN_PROCESS) {
+                completeOrder(order);
+            }
         }
     }
 
@@ -73,6 +74,8 @@ public class BookServiceImpl implements BookService {
                 return;
             }
         }
-        orderRepository.changeOrderStatus(order.getId(), Order.OrderStatus.COMPLETED);
+        order.setStatus(Order.OrderStatus.COMPLETED);
+        order.setCompletionDate(LocalDateTime.now());
+        orderRepository.save(order);
     }
 }

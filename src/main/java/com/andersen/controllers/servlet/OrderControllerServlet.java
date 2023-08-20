@@ -8,11 +8,9 @@ import com.andersen.controllers.servlet.jsonBodies.JsonOrder;
 import com.andersen.enums.OrderSortKey;
 import com.andersen.models.Order;
 import com.andersen.models.Request;
-import com.andersen.services.impl.BookServiceImpl;
-import com.andersen.services.impl.OrderServiceImpl;
+import com.andersen.services.BookService;
+import com.andersen.services.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -20,14 +18,12 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Singleton
 public class OrderControllerServlet implements OrderController {
-    private final BookServiceImpl bookService;
-    private final OrderServiceImpl orderService;
+    private final BookService bookService;
+    private final OrderService orderService;
     private final ObjectMapper objectMapper;
 
-    @Inject
-    public OrderControllerServlet(BookServiceImpl bookService, OrderServiceImpl orderService, ObjectMapper objectMapper) {
+    public OrderControllerServlet(BookService bookService, OrderService orderService, ObjectMapper objectMapper) {
         this.bookService = bookService;
         this.orderService = orderService;
         this.objectMapper = objectMapper;
@@ -49,12 +45,14 @@ public class OrderControllerServlet implements OrderController {
         try {
             JsonOrder jsonOrder = objectMapper.readValue(request.getInputStream(), JsonOrder.class);
 
+            Order order = new Order(jsonOrder.getClientId());
+
             List<Request> requests = jsonOrder.getRequests().stream()
-                    .map(jsonRequest -> new Request(jsonOrder.getClientId(), bookService.findById(jsonRequest.getBookId()),
+                    .map(jsonRequest -> new Request(order.getId(), jsonOrder.getClientId(), bookService.findById(jsonRequest.getBookId()),
                             jsonRequest.getAmount()))
                     .toList();
 
-            Order order = new Order(jsonOrder.getClientId(), requests);
+            order.changeRequests(requests);
 
             orderService.add(order);
         } catch (IOException e) {

@@ -10,7 +10,6 @@ import com.google.inject.Singleton;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -47,21 +46,6 @@ public class LocalOrderRepository implements OrderRepository {
     @Override
     public Optional<Order> findById(Long id) {
         return getAllSorted(OrderSortKey.NATURAL).stream().filter(order -> Objects.equals(order.getId(), id)).findFirst();
-    }
-
-    @Override
-    public void changeOrderStatus(Long id, Order.OrderStatus orderStatus) {
-        List<Order> orders = getAllSorted(OrderSortKey.NATURAL);
-
-        Order searchedOrder = findById(orders, id);
-
-        searchedOrder.setStatus(orderStatus);
-
-        if (orderStatus == Order.OrderStatus.COMPLETED) {
-            searchedOrder.setCompletionDate(LocalDateTime.now());
-        }
-
-        save(orders);
     }
 
     @Override

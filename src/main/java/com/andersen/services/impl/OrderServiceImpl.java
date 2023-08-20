@@ -7,19 +7,15 @@ import com.andersen.models.Request;
 import com.andersen.repositories.OrderRepository;
 import com.andersen.repositories.RequestRepository;
 import com.andersen.services.OrderService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Singleton
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final RequestRepository requestRepository;
 
-    @Inject
     public OrderServiceImpl(OrderRepository orderRepository, RequestRepository requestRepository) {
         this.orderRepository = orderRepository;
         this.requestRepository = requestRepository;
@@ -33,6 +29,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void add(Order order) {
         orderRepository.save(order);
+        order.getRequests().forEach(requestRepository::save);
     }
 
     @Override
@@ -43,12 +40,15 @@ public class OrderServiceImpl implements OrderService {
 
         for (Request request : order.getRequests()) {
             if (request.getRequestStatus() == Request.RequestStatus.IN_PROCESS) {
-                orderRepository.changeOrderStatus(order.getId(), Order.OrderStatus.IN_PROCESS);
+                order.setStatus(Order.OrderStatus.IN_PROCESS);
+                orderRepository.save(order);
                 return;
             }
         }
 
-        orderRepository.changeOrderStatus(order.getId(), Order.OrderStatus.COMPLETED);
+        order.setStatus(Order.OrderStatus.COMPLETED);
+        order.setCompletionDate(LocalDateTime.now());
+        orderRepository.save(order);
     }
 
     @Override
@@ -73,14 +73,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public void completeRequests(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("Wrong order id"));
+        List<Request> requests = requestRepository.findAllByOrderId(orderId);
 
-        for (Request request : order.getRequests()) {
+        for (Request request : requests) {
             if (request.getBook().getStatus() == Book.BookStatus.IN_STOCK) {
-                requestRepository.changeRequestStatus(request.getId(), Request.RequestStatus.COMPLETED);
+                request.setRequestStatus(Request.RequestStatus.COMPLETED);
             } else {
-                requestRepository.changeRequestStatus(request.getId(), Request.RequestStatus.IN_PROCESS);
+                request.setRequestStatus(Request.RequestStatus.IN_PROCESS);
             }
+            requestRepository.save(request);
         }
     }
 }

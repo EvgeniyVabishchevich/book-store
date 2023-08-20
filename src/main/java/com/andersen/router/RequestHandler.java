@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 
 public class RequestHandler {
 
-    private Object methodOwner;
-    private Method method;
+    private final Object methodOwner;
+    private final Method method;
 
     public RequestHandler(Object methodOwner, Method method) {
         this.methodOwner = methodOwner;

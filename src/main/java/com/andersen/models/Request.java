@@ -10,6 +10,7 @@ public class Request {
 
     private Long id;
     private Long clientId;
+    private Long orderId;
 
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
             property = "id", scope = Book.class)
@@ -24,12 +25,22 @@ public class Request {
         JUST_CREATED, IN_PROCESS, COMPLETED
     }
 
-    public Request(Long clientId, Book book, Integer amount) {
+    public Request(Long orderId, Long clientId, Book book, Integer amount) {
         this.id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+        this.orderId = orderId;
         this.clientId = clientId;
         this.book = book;
         this.amount = amount;
         this.requestStatus = RequestStatus.JUST_CREATED;
+    }
+
+    public Request(Long id, Long clientId, Long orderId, Book book, Integer amount, RequestStatus requestStatus) {
+        this.id = id;
+        this.clientId = clientId;
+        this.orderId = orderId;
+        this.book = book;
+        this.amount = amount;
+        this.requestStatus = requestStatus;
     }
 
     public Request() {
@@ -73,6 +84,14 @@ public class Request {
 
     public void setRequestStatus(RequestStatus requestStatus) {
         this.requestStatus = requestStatus;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     @Override

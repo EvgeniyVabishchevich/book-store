@@ -13,7 +13,5 @@ public interface OrderRepository {
 
     Optional<Order> findById(Long id);
 
-    void changeOrderStatus(Long id, Order.OrderStatus orderStatus);
-
     void remove(Long id);
 }
