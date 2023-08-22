@@ -6,6 +6,7 @@ import com.andersen.controllers.RequestController;
 import com.andersen.controllers.servlet.BookControllerServlet;
 import com.andersen.controllers.servlet.OrderControllerServlet;
 import com.andersen.controllers.servlet.RequestControllerServlet;
+import com.andersen.properties.TomcatProperties;
 import com.andersen.router.RouterServlet;
 import com.andersen.services.BookService;
 import com.andersen.services.OrderService;
@@ -18,11 +19,10 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
 
 public class ServletApp implements App {
     private final RouterServlet servlet;
+    private final static String TOMCAT_PROPERTIES_PATH = "src/main/resources/tomcat.properties";
 
     public ServletApp(BookService bookService, OrderService orderService, RequestService requestService) {
         ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
@@ -39,21 +39,20 @@ public class ServletApp implements App {
     @Override
     public void start() {
         try {
-            Properties properties = new Properties();
-            properties.load(new FileInputStream("src/main/resources/tomcat.properties"));
+            TomcatProperties tomcatProperties = new TomcatProperties(TOMCAT_PROPERTIES_PATH);
 
             Tomcat tomcat = new Tomcat();
             tomcat.setBaseDir("temp");
 
             Connector httpConnector = new Connector();
-            httpConnector.setPort(Integer.parseInt(properties.getProperty("port")));
+            httpConnector.setPort(tomcatProperties.getPort());
             tomcat.getService().addConnector(httpConnector);
 
             String docBase = new File(".").getAbsolutePath();
 
-            Context servletContext = tomcat.addContext(properties.getProperty("contextPath"), docBase);
+            Context servletContext = tomcat.addContext(tomcatProperties.getContextPath(), docBase);
 
-            tomcat.addServlet(properties.getProperty("contextPath"), "RouterServlet", servlet);
+            tomcat.addServlet(tomcatProperties.getContextPath(), "RouterServlet", servlet);
             servletContext.addServletMappingDecoded("/*", "RouterServlet");
 
             tomcat.start();

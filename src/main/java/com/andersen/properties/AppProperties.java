@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class AppProperties {
-    private static final String REPOSITORY_PROPERTY = "repositoryType";
-    private static final String CONTROLLER_PROPERTY = "controllerType";
     private final RepositoryType repositoryType;
     private final ControllerType controllerType;
 
@@ -17,8 +15,8 @@ public class AppProperties {
         Properties appProperties = new Properties();
         appProperties.load(new FileInputStream(path));
 
-        repositoryType = RepositoryType.valueOf(appProperties.getProperty(REPOSITORY_PROPERTY).toUpperCase());
-        controllerType = ControllerType.valueOf(appProperties.getProperty(CONTROLLER_PROPERTY).toUpperCase());
+        repositoryType = RepositoryType.valueOf(appProperties.getProperty("repositoryType").toUpperCase());
+        controllerType = ControllerType.valueOf(appProperties.getProperty("controllerType").toUpperCase());
     }
 
     public RepositoryType getRepositoryType() {

@@ -17,7 +17,7 @@ public class EntryPoint {
         ServiceInitializer serviceInitializer = new ServiceInitializer(repositoryInitializer.getBookRepository(),
                 repositoryInitializer.getOrderRepository(), repositoryInitializer.getRequestRepository());
 
-        App app = null;
+        App app;
 
         switch (appProperties.getControllerType()) {
             case SERVLET -> {
