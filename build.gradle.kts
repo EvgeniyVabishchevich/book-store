@@ -21,11 +21,14 @@ dependencies {
 
     implementation("org.postgresql:postgresql:42.6.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("org.hibernate.orm:hibernate-core:6.2.7.Final")
     testImplementation("org.slf4j:slf4j-simple:2.0.7")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation("org.mockito:mockito-core:5.4.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.4.0")
+
+
 }
 
 java {

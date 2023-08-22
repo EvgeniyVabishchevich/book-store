@@ -1,7 +1,0 @@
-{
-  "port": 8080,
-  "contextPath": "",
-  "jdbcUrl": "jdbc:postgresql://localhost:5432/BookStore",
-  "jdbcUsername": "postgres",
-  "jdbcPassword": "1234qwer"
-}
