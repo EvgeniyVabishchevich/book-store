@@ -10,6 +10,7 @@ import java.util.Properties;
 
 public class HibernateDatabase {
     private final SessionFactory sessionFactory;
+
     public HibernateDatabase(Properties properties) {
         Configuration config = new Configuration();
         config.setProperties(properties);

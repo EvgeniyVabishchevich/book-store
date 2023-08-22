@@ -1,6 +1,5 @@
 package com.andersen.repositories.local;
 
-import com.andersen.config.model.ConfigModel;
 import com.andersen.enums.BookSortKey;
 import com.andersen.models.Book;
 import com.andersen.repositories.BookRepository;
@@ -17,12 +16,12 @@ import java.util.Objects;
 @Singleton
 public class LocalBookRepository implements BookRepository {
     private final ObjectMapper objectMapper;
-    private final ConfigModel configModel;
+    private final String savePath;
 
     @Inject
-    public LocalBookRepository(ObjectMapper objectMapper, ConfigModel configModel) {
+    public LocalBookRepository(ObjectMapper objectMapper, String savePath) {
         this.objectMapper = objectMapper;
-        this.configModel = configModel;
+        this.savePath = savePath;
     }
 
     @Override
@@ -49,7 +48,7 @@ public class LocalBookRepository implements BookRepository {
     @Override
     public List<Book> getAllSorted(BookSortKey sortKey) {
         try {
-            List<Book> books = objectMapper.readValue(new File(configModel.savePath()), AppState.class).getBooks();
+            List<Book> books = objectMapper.readValue(new File(savePath), AppState.class).getBooks();
 
             switch (sortKey) {
                 case NAME -> books.sort(Comparator.comparing(Book::getName));
@@ -65,11 +64,11 @@ public class LocalBookRepository implements BookRepository {
 
     private void save(List<Book> books) {
         try {
-            AppState appState = objectMapper.readValue(new File(configModel.savePath()), AppState.class);
+            AppState appState = objectMapper.readValue(new File(savePath), AppState.class);
 
             appState.synchronizeBooks(books);
 
-            objectMapper.writeValue(new File(configModel.savePath()), appState);
+            objectMapper.writeValue(new File(savePath), appState);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

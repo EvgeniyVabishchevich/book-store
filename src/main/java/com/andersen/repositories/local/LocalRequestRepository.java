@@ -1,6 +1,5 @@
 package com.andersen.repositories.local;
 
-import com.andersen.config.model.ConfigModel;
 import com.andersen.enums.RequestSortKey;
 import com.andersen.models.Request;
 import com.andersen.repositories.RequestRepository;
@@ -16,12 +15,12 @@ import java.util.List;
 @Singleton
 public class LocalRequestRepository implements RequestRepository {
     private final ObjectMapper objectMapper;
-    private final ConfigModel configModel;
+    private final String savePath;
 
     @Inject
-    public LocalRequestRepository(ObjectMapper objectMapper, ConfigModel configModel) {
+    public LocalRequestRepository(ObjectMapper objectMapper, String savePath) {
         this.objectMapper = objectMapper;
-        this.configModel = configModel;
+        this.savePath = savePath;
     }
 
     @Override
@@ -36,7 +35,7 @@ public class LocalRequestRepository implements RequestRepository {
     @Override
     public List<Request> getAllSorted(RequestSortKey sortKey) {
         try {
-            List<Request> requests = objectMapper.readValue(new File(configModel.savePath()), AppState.class).getRequests();
+            List<Request> requests = objectMapper.readValue(new File(savePath), AppState.class).getRequests();
 
             switch (sortKey) {
                 case PRICE ->
@@ -64,11 +63,11 @@ public class LocalRequestRepository implements RequestRepository {
 
     public void save(List<Request> requests) {
         try {
-            AppState appState = objectMapper.readValue(new File(configModel.savePath()), AppState.class);
+            AppState appState = objectMapper.readValue(new File(savePath), AppState.class);
 
             appState.synchronizeRequests(requests);
 
-            objectMapper.writeValue(new File(configModel.savePath()), appState);
+            objectMapper.writeValue(new File(savePath), appState);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

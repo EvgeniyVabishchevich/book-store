@@ -1,6 +1,5 @@
 package com.andersen.repositories.local;
 
-import com.andersen.config.model.ConfigModel;
 import com.andersen.enums.OrderSortKey;
 import com.andersen.models.Order;
 import com.andersen.repositories.OrderRepository;
@@ -18,18 +17,18 @@ import java.util.Optional;
 @Singleton
 public class LocalOrderRepository implements OrderRepository {
     private final ObjectMapper objectMapper;
-    private final ConfigModel configModel;
+    private final String savePath;
 
     @Inject
-    public LocalOrderRepository(ObjectMapper objectMapper, ConfigModel configModel) {
+    public LocalOrderRepository(ObjectMapper objectMapper, String savePath) {
         this.objectMapper = objectMapper;
-        this.configModel = configModel;
+        this.savePath = savePath;
     }
 
     @Override
     public List<Order> getAllSorted(OrderSortKey sortKey) {
         try {
-            List<Order> orders = objectMapper.readValue(new File(configModel.savePath()), AppState.class).getOrders();
+            List<Order> orders = objectMapper.readValue(new File(savePath), AppState.class).getOrders();
 
             switch (sortKey) {
                 case PRICE -> orders.sort(Comparator.comparing(Order::getPrice));
@@ -79,11 +78,11 @@ public class LocalOrderRepository implements OrderRepository {
 
     public void save(List<Order> orders) {
         try {
-            AppState appState = objectMapper.readValue(new File(configModel.savePath()), AppState.class);
+            AppState appState = objectMapper.readValue(new File(savePath), AppState.class);
 
             appState.synchronizeOrders(orders);
 
-            objectMapper.writeValue(new File(configModel.savePath()), appState);
+            objectMapper.writeValue(new File(savePath), appState);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
